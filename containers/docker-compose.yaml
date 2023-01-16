@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  service1:
+    restart: always
+    container_name: test1
+    image: hello-world
+    networks:
+      dmls_stocks:
+        ipv4_address: "172.28.0.2"
+
+  service2:
+    restart: always
+    container_name: mlflow
+    image: mlflow
+    build: ./mlflow
+    expose:
+      - "7777"
+    ports:
+      - "7777:7777"
+    command: mlflow server --host 0.0.0.0 --port 7777
+    networks:
+      dmls_stocks:
+        ipv4_address: "172.28.0.3"
+
+  service3:
+    restart: always
+    container_name: update
+    image: update_img
+    build: ./update
+    networks:
+      dmls_stocks:
+        ipv4_address: "172.28.0.4"
+
+networks:
+  dmls_stocks:
+    name: dmls_stocks
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "172.28.0.0/24"
