@@ -1,1 +1,2 @@
-* * * * * python /app/update.py
+* * * * * python /update_data.py
+0 2 */15 * * python /update_models.py
