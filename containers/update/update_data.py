@@ -114,8 +114,10 @@ for stock in nasdaq:
     df = pd.read_csv(f"{path}{stock}.csv", index_col='Date')
     start_date = (pd.to_datetime(df.tail(1).index.values[0]).date() + pd.to_timedelta(1, unit='d'))
     new_df = pdr.get_data_yahoo(stock, start=start_date)
-    if pd.to_datetime(new_df.head(1).index.values[0]).date() >= start_date:
-        df = pd.concat([df, new_df])
+    new_df.index = pd.to_datetime(new_df.index, format='%Y-%m-%d')
+    new_df.index = new_df.index.tz_localize(None)
     df.index = pd.to_datetime(df.index, format='%Y-%m-%d')
     df.index = df.index.tz_localize(None)
+    if pd.to_datetime(new_df.head(1).index.values[0]).date() >= start_date:
+        df = pd.concat([df, new_df])
     df.to_csv(f"{path}{stock}.csv")
